@@ -15,7 +15,7 @@ db = mysql.connector.connect(
 mycursor = db.cursor()
 
 
-
+#Option Number one will search the professor of the user's choice
 def searchProfessor():
     root1 = Tk()
     label=Label(root1,text="Select the search criteria: ",font='arial 25 bold')
@@ -30,7 +30,7 @@ def searchProfessor():
     frame.pack()
     root.resizable(False,False)
     root1.mainloop()
-
+#Function that search by name
 def search_n(): 
     global e1
     root2=Tk()
@@ -42,10 +42,10 @@ def search_n():
     l1.place(x=10,y=130)
     e1=tkinter.Entry(root2)
     e1.place(x=100,y=130)
-    b1=Button(root2,text="SUBMIT",command=result)
+    b1=Button(root2,text="SUBMIT",command=result_n)
     b1.place(x=90,y=180)
     root2.mainloop()
-def result():
+def result_n():
     global e1
     root3=Tk()
     label=Label(root3,text="Teacher: ",font='arial 25 bold')
@@ -65,12 +65,9 @@ def result():
     for rows in mydata:
         answer = Label(root3,text = str(rows, ), font = 'arial 15')
         answer.pack(pady=(0, 30))
-        
+
     root3.mainloop()
-    
-
-    
-
+#Function that search by last name
 def search_ln():
     global e2
     root4=Tk()
@@ -105,9 +102,9 @@ def results_ln():
     for rows in mydata:
         answer = Label(root4,text = str(rows, ), font = 'arial 15')
         answer.pack(pady=(0, 30))
-        
-    root4.mainloop()
 
+    root4.mainloop()
+#Function that prints all the courses and teachers available with their reviews
 def search_all():
     root5=Tk()
     label=Label(root5,text="Teacher: ",font='arial 25 bold')
@@ -125,36 +122,74 @@ def search_all():
     for rows in mydata:
         answer = Label(root5,text = str(rows, ), font = 'arial 15')
         answer.pack(pady=(0, 30))
-    root5.mainloop()
-    
 
+    root5.mainloop()
 
 def searchCourse():
-    print("Select the search criteria:")
-    print()
-    print("1: Search by name ")
-    print()
-    print("2: Show All  ")
-    print()
-    
-    choice = int(input("Enter choice: "))
-    print()
+    root6 = Tk()
+    label=Label(root6,text="Select the search criteria: ",font='arial 25 bold')
+    fn=Button(root6,text="Search by Course Name ",font="arial 20 bold",bg='cyan',command= course_name)
+    all=Button(root6,text="List of Courses",font="arial 20 bold",bg='cyan',command=all_courses)
+    label.pack()
+    fn.pack(side=LEFT,padx=100)
+    all.pack(side=LEFT,padx=100)
+    frame=Frame(root6,height=400,width=100)
+    frame.pack()
+    root.resizable(False,False)
+    root6.mainloop()
 
-    if choice == 1 : 
-        f = input("Enter the course name: ")
-        mycursor.execute("SELECT  course_name,course_number, credits, faculty_name, faculty_lastname, reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id  where course_name =%s", (f,))
-        mydata = mycursor.fetchall()
-        print("The content details are as follows : ")
-        print("Course, Course Code, Credit , Faculty Name and  Reviews ")
-        for rows in mydata:
-            print(rows)
-    elif choice == 2:
-        mycursor.execute("SELECT  course_name,course_number, credits, faculty_name, faculty_lastname, reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id ")
-        mydata = mycursor.fetchall()
-        print("The content details are as follows : ")
-        print("Course, Course Code, Credit, Faculty Name and  Reviews ")
-        for rows in mydata:
-            print(rows)
+def course_name(): 
+    global e3
+    root7=Tk()
+    label=Label(root7,text="Search course: ",font='arial 25 bold')
+    label.pack()
+    frame=Frame(root7,height=200,width=200)
+    frame.pack()
+    l1=Label(root7,text="Course Name: ")
+    l1.place(x=10,y=130)
+    e3=tkinter.Entry(root7)
+    e3.place(x=100,y=130)
+    b1=Button(root7,text="SUBMIT",command=result_course_name)
+    b1.place(x=90,y=180)
+    root7.mainloop()
+def result_course_name():
+    global e3
+    root8=Tk()
+    label=Label(root8,text="Teacher: ",font='arial 25 bold')
+    label.pack()
+    frame=Frame(root8,height=120,width=100)
+    frame.pack()
+    entry= e3.get()
+    entry_0 = str(entry)
+    mycursor.execute("SELECT  course_name,course_number, credits, faculty_name, faculty_lastname, reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id  where course_name =%s", (entry_0,))
+    mydata = mycursor.fetchall()
+    details = Label(root8,text="The content details are as follows : ", font = 'arial 15')
+    details.pack()
+    details.place(x=30, y = 50)
+    details2=Label(root8,text="Course, Course Code, Credit, Name and Reviews ",font = 'arial 15')
+    details2.pack()
+    details2.place(x=30, y=80 )
+    for rows in mydata:
+        answer = Label(root8,text = str(rows, ), font = 'arial 15')
+        answer.pack(pady=(0, 30))
+   
+def  all_courses():
+    root9=Tk()
+    label=Label(root9,text="Courses: ",font='arial 25 bold')
+    label.pack()
+    frame=Frame(root9,height=120,width=100)
+    frame.pack()
+    mycursor.execute("SELECT  course_name,course_number, credits, faculty_name, faculty_lastname, reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id ")
+    mydata = mycursor.fetchall()
+    details = Label(root9,text="The content details are as follows : ", font = 'arial 15')
+    details.pack()
+    details.place(x=30, y = 50)
+    details2=Label(root9,text="Course, Course Code, Credit, Name and Reviews ",font = 'arial 15')
+    details2.pack()
+    details2.place(x=30, y=80 )
+    for rows in mydata:
+        answer = Label(root9,text = str(rows, ), font = 'arial 15')
+        answer.pack(pady=(0, 30))
 
 def writeReview():
     print("Which professor would you like to write a review for?")
@@ -265,7 +300,7 @@ def writeReview():
 root=Tk()
 label=Label(root,text="Welcome to Rate my Professor of BYU-I",font="arial 40 bold",bg='blue')
 b1=Button(text="Search Professor",font="arial 20 bold",bg='cyan',command=searchProfessor)
-b2=Button(root,text="Search Course",font="arial 20 bold",bg='cyan',command=search_ln)
+b2=Button(root,text="Search Course",font="arial 20 bold",bg='cyan',command=searchCourse)
 b3=Button(root,text="Write a Review",font="arial 20 bold",bg='cyan',command=search_all)
 label.pack()
 b1.pack(side=LEFT,padx=100)
