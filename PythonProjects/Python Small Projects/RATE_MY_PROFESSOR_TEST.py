@@ -291,32 +291,83 @@ def choice_german_review():
     root14.mainloop()
 
 def choice_jerry():
-    lh = input("Write a review (max 400 characters): ")
-    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
+    global e6
+    root15=tk.Tk()
+    label=Label(root15,text="Write review for Jerry ",font='arial 25 bold')
+    label.pack(padx = (20,0))
+    frame=Frame(root15,height=200,width=200)
+    frame.pack()
+    e6=tk.Text(root15, height = 7, width = 42)
+    e6.place(x=10,y=50)
+    b1=Button(root15,text="SUBMIT",command=choice_jerry_review)
+    b1.place(x=150,y=190)
+    root15.mainloop()
+def choice_jerry_review():
+    global e6
+    root16=Tk()
+    label=Label(root16,text="Reviews: ",font='arial 25 bold')
+    label.pack()
+    frame=Frame(root16,height=120,width=100)
+    frame.pack()
+    entry= e6.get("1.0",'end-1c')
+    entry_0 = str(entry)
+    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(entry_0,))
     db.commit()
     last_digit = mycursor.lastrowid
     mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,3)", (last_digit,))
     db.commit()
     mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
     mydata = mycursor.fetchall()
-    print("The content details are as follows : ")
-    print(" Name , Course, Course Code, Credit  and Reviews ")
-    for row in mydata:
-        print(row)
+    details = Label(root16,text="The content details are as follows : ", font = 'arial 15')
+    details.pack()
+    details.place(x=30, y = 50)
+    details2=Label(root16,text="Name , Course, Course Code, Credit and Reviews ",font = 'arial 15')
+    details2.pack()
+    details2.place(x=30, y=80 )
+    for rows in mydata:
+        answer = Label(root16,text = str(rows, ), font = 'arial 15')
+        answer.pack(pady=(0, 30))
+    root16.mainloop()
 
 def choice_frank():
-    lh = input("Write a review (max 400 characters): ")
-    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
+    global e7
+    root17=tk.Tk()
+    label=Label(root17,text="Write review for Frank ",font='arial 25 bold')
+    label.pack(padx = (20,0))
+    frame=Frame(root17,height=200,width=200)
+    frame.pack()
+    e7=tk.Text(root17, height = 7, width = 42)
+    e7.place(x=10,y=50)
+    b1=Button(root17,text="SUBMIT",command=choice_frank_review)
+    b1.place(x=150,y=190)
+    root17.mainloop()
+
+def choice_frank_review():
+    global e7
+    root18=Tk()
+    label=Label(root18,text="Reviews: ",font='arial 25 bold')
+    label.pack()
+    frame=Frame(root18,height=120,width=100)
+    frame.pack()
+    entry= e7.get("1.0",'end-1c')
+    entry_0 = str(entry)
+    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(entry_0,))
     db.commit()
     last_digit = mycursor.lastrowid
     mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,4)", (last_digit,))
     db.commit()
     mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
     mydata = mycursor.fetchall()
-    print("The content details are as follows : ")
-    print(" Name , Course, Course Code, Credit  and Reviews ")
-    for row in mydata:
-        print(row)
+    details = Label(root18,text="The content details are as follows : ", font = 'arial 15')
+    details.pack()
+    details.place(x=30, y = 50)
+    details2=Label(root18,text="Name , Course, Course Code, Credit and Reviews ",font = 'arial 15')
+    details2.pack()
+    details2.place(x=30, y=80 )
+    for rows in mydata:
+        answer = Label(root18,text = str(rows, ), font = 'arial 15')
+        answer.pack(pady=(0, 30))
+    root18.mainloop()
 
 def write_new():
     f = []
