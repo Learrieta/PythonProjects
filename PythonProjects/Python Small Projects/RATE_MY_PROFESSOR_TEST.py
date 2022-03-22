@@ -1,9 +1,11 @@
 import tkinter.messagebox
 from tkinter import  *
+import tkinter as tk
 import random as rd
 import datetime 
 import os
 from secrets import choice
+from turtle import width
 import mysql.connector
 
 db = mysql.connector.connect(
@@ -192,116 +194,178 @@ def  all_courses():
         answer.pack(pady=(0, 30))
 
 def writeReview():
-    print("Which professor would you like to write a review for?")
+    root10 = Tk()
+    label=Label(root10,text="Pick an Option!",font='arial 25 bold')
+    luis=Button(root10,text="Luis Hidalgo",font="arial 20 bold",bg='cyan',command= choice_luis)
+    german=Button(root10,text="German Garcia",font="arial 20 bold",bg='cyan',command= choice_german)
+    jerry=Button(root10,text="Jerry Edmonds",font="arial 20 bold",bg='cyan',command=choice_jerry)
+    frank=Button(root10,text="Frank Lozano",font="arial 20 bold",bg='cyan',command=choice_frank)
+    add_new=Button(root10,text="Add a new Teacher",font="arial 20 bold",bg='cyan',command= write_new)
+    label.pack()
+    luis.pack(side=LEFT,padx=(70,10))
+    german.pack(side=LEFT,padx=10)
+    jerry.pack(side=LEFT,padx=10)
+    frank.pack(side=LEFT,padx=10)
+    add_new.pack(side=LEFT,padx=10)
+    frame=Frame(root10,height=400,width=100)
+    frame.pack()
+    root.resizable(False,False)
+    root10.mainloop()
+    
+def choice_luis():
+    global e4
+    root11=tk.Tk()
+    label=Label(root11,text="Write review for Luis ",font='arial 25 bold')
+    label.pack(padx = (20,0))
+    frame=Frame(root11,height=200,width=200)
+    frame.pack()
+    e4=tk.Text(root11, height = 7, width = 42)
+    e4.place(x=10,y=50)
+    b1=Button(root11,text="SUBMIT",command=choice_luis_review)
+    b1.place(x=150,y=190)
+    root11.mainloop()
+def choice_luis_review():
+    global e4
+    root12=Tk()
+    label=Label(root12,text="Reviews: ",font='arial 25 bold')
+    label.pack()
+    frame=Frame(root12,height=120,width=100)
+    frame.pack()
+    entry= e4.get("1.0",'end-1c')
+    entry_0 = str(entry)
+    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(entry_0,))
+    db.commit()
+    last_digit = mycursor.lastrowid
+    mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,1)", (last_digit,))
+    db.commit()
+    mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
+    mydata = mycursor.fetchall()
+    details = Label(root12,text="The content details are as follows : ", font = 'arial 15')
+    details.pack()
+    details.place(x=30, y = 50)
+    details2=Label(root12,text="Name , Course, Course Code, Credit and Reviews ",font = 'arial 15')
+    details2.pack()
+    details2.place(x=30, y=80 )
+    for rows in mydata:
+        answer = Label(root12,text = str(rows, ), font = 'arial 15')
+        answer.pack(pady=(0, 30))
+    root12.mainloop()
+
+def choice_german():
+    global e5
+    root13=tk.Tk()
+    label=Label(root13,text="Write review for German ",font='arial 25 bold')
+    label.pack(padx = (20,0))
+    frame=Frame(root13,height=200,width=200)
+    frame.pack()
+    e5=tk.Text(root13, height = 7, width = 42)
+    e5.place(x=10,y=50)
+    b1=Button(root13,text="SUBMIT",command=choice_german_review)
+    b1.place(x=150,y=190)
+    root13.mainloop()
+def choice_german_review():
+    global e5
+    root14=Tk()
+    label=Label(root14,text="Reviews: ",font='arial 25 bold')
+    label.pack()
+    frame=Frame(root14,height=120,width=100)
+    frame.pack()
+    entry= e5.get("1.0",'end-1c')
+    entry_0 = str(entry)
+    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(entry_0,))
+    db.commit()
+    last_digit = mycursor.lastrowid
+    mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,2)", (last_digit,))
+    db.commit()
+    mycursor.execute("SELECT faculty_name, faculty_lastname, course_name, course_number, credits, reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
+    mydata = mycursor.fetchall()
+    details = Label(root14,text="The content details are as follows : ", font = 'arial 15')
+    details.pack()
+    details.place(x=30, y = 50)
+    details2=Label(root14,text="Name , Course, Course Code, Credit and Reviews ",font = 'arial 15')
+    details2.pack()
+    details2.place(x=30, y=80 )
+    for rows in mydata:
+        answer = Label(root14,text = str(rows, ), font = 'arial 15')
+        answer.pack(pady=(0, 30))
+    root14.mainloop()
+
+def choice_jerry():
+    lh = input("Write a review (max 400 characters): ")
+    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
+    db.commit()
+    last_digit = mycursor.lastrowid
+    mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,3)", (last_digit,))
+    db.commit()
+    mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
+    mydata = mycursor.fetchall()
+    print("The content details are as follows : ")
+    print(" Name , Course, Course Code, Credit  and Reviews ")
+    for row in mydata:
+        print(row)
+
+def choice_frank():
+    lh = input("Write a review (max 400 characters): ")
+    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
+    db.commit()
+    last_digit = mycursor.lastrowid
+    mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,4)", (last_digit,))
+    db.commit()
+    mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
+    mydata = mycursor.fetchall()
+    print("The content details are as follows : ")
+    print(" Name , Course, Course Code, Credit  and Reviews ")
+    for row in mydata:
+        print(row)
+
+def write_new():
+    f = []
+    c = []
+    r = []
+    print("Please enter the following: ")
     print()
-    print("1: Luis Hidalgo ")
-    print("2: German Garcia  ")
-    print("3: Jerry Edmonds ")
-    print("4 : Frank Lozano")
-    print("5: Add a new professor")
-    print()
-    choice = input("Enter choice: ")
-    print()
-    if choice == 1:
-        lh = input("Write a review (max 400 characters): ")
-        mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
-        db.commit()
-        last_digit = mycursor.lastrowid
-        mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,1)", (last_digit,))
-        db.commit()
-        mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
-        mydata = mycursor.fetchall()
-        print("The content details are as follows : ")
-        print(" Name , Course, Course Code, Credit  and Reviews ")
-        for row in mydata:
-            print(row)
-    if choice == 2:
-        lh = input("Write a review (max 400 characters): ")
-        mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
-        db.commit()
-        last_digit = mycursor.lastrowid
-        mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,2)", (last_digit,))
-        db.commit()
-        mycursor.execute("SELECT faculty_name, faculty_lastname, course_name, course_number, credits, reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
-        mydata = mycursor.fetchall()
-        print("The content details are as follows : ")
-        print(" Name , Course, Course Code, Credit  and Reviews ")
-        for row in mydata:
-            print(row)
-    if choice == 3:
-        lh = input("Write a review (max 400 characters): ")
-        mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
-        db.commit()
-        last_digit = mycursor.lastrowid
-        mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,3)", (last_digit,))
-        db.commit()
-        mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
-        mydata = mycursor.fetchall()
-        print("The content details are as follows : ")
-        print(" Name , Course, Course Code, Credit  and Reviews ")
-        for row in mydata:
-            print(row)
-    if choice == 4:
-        lh = input("Write a review (max 400 characters): ")
-        mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
-        db.commit()
-        last_digit = mycursor.lastrowid
-        mycursor.execute("INSERT INTO reviews_has_faculty VALUES (%s,4)", (last_digit,))
-        db.commit()
-        mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit,))
-        mydata = mycursor.fetchall()
-        print("The content details are as follows : ")
-        print(" Name , Course, Course Code, Credit  and Reviews ")
-        for row in mydata:
-            print(row)
-    if choice == 5:
-        f = []
-        c = []
-        r = []
-        print("Please enter the following: ")
-        print()
-        name = input("First name: ")
-        f.append(name)
-        lname = input("Last Name: ")
-        f.append(lname)
-        cont_faculty = (f)
-        sql_faculty = "INSERT INTO faculty (faculty_name, faculty_lastname) VALUES (%s,%s)"
-        mycursor.execute(sql_faculty,cont_faculty)
-        db.commit()
-        last_digit = mycursor.lastrowid
-        c_name = input("Course Name: ")
-        c.append(c_name)
-        c_number = int(input("Course Number: "))
-        c.append(c_number)
-        c_credits = int(input("Enter number of Credits: "))
-        c.append(c_credits)
-        c.append(last_digit)
-        cont_course = (c)
-        sql_course = "INSERT INTO course (course_name, course_number, credits, faculty_id) VALUES (%s,%s,%s,%s)"
-        mycursor.execute(sql_course,cont_course)
-        db.commit()
-        lh = input("Write a review (max 400 characters): ")
-        mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
-        db.commit()
-        last_digit_r = mycursor.lastrowid
-        r.append(last_digit_r)
-        r.append(last_digit)
-        cont_r = (r)
-        sql_r = "INSERT INTO reviews_has_faculty VALUES (%s,%s)"
-        mycursor.execute(sql_r, cont_r)
-        db.commit()
-        mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit_r,))
-        mydata = mycursor.fetchall()
-        print("The content details are as follows : ")
-        print(" Name , Course, Course Code, Credit  and Reviews ")
-        for row in mydata:
-            print(row)
+    name = input("First name: ")
+    f.append(name)
+    lname = input("Last Name: ")
+    f.append(lname)
+    cont_faculty = (f)
+    sql_faculty = "INSERT INTO faculty (faculty_name, faculty_lastname) VALUES (%s,%s)"
+    mycursor.execute(sql_faculty,cont_faculty)
+    db.commit()
+    last_digit = mycursor.lastrowid
+    c_name = input("Course Name: ")
+    c.append(c_name)
+    c_number = int(input("Course Number: "))
+    c.append(c_number)
+    c_credits = int(input("Enter number of Credits: "))
+    c.append(c_credits)
+    c.append(last_digit)
+    cont_course = (c)
+    sql_course = "INSERT INTO course (course_name, course_number, credits, faculty_id) VALUES (%s,%s,%s,%s)"
+    mycursor.execute(sql_course,cont_course)
+    db.commit()
+    lh = input("Write a review (max 400 characters): ")
+    mycursor.execute("INSERT INTO reviews (reviews) VALUES(%s)",(lh,))
+    db.commit()
+    last_digit_r = mycursor.lastrowid
+    r.append(last_digit_r)
+    r.append(last_digit)
+    cont_r = (r)
+    sql_r = "INSERT INTO reviews_has_faculty VALUES (%s,%s)"
+    mycursor.execute(sql_r, cont_r)
+    db.commit()
+    mycursor.execute("SELECT faculty_name, faculty_lastname, course_name,course_number, credits,  reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id where r.reviews_id = %s ", (last_digit_r,))
+    mydata = mycursor.fetchall()
+    print("The content details are as follows : ")
+    print(" Name , Course, Course Code, Credit  and Reviews ")
+    for row in mydata:
+        print(row)
 
 root=Tk()
 label=Label(root,text="Welcome to Rate my Professor of BYU-I",font="arial 40 bold",bg='blue')
 b1=Button(text="Search Professor",font="arial 20 bold",bg='cyan',command=searchProfessor)
 b2=Button(root,text="Search Course",font="arial 20 bold",bg='cyan',command=searchCourse)
-b3=Button(root,text="Write a Review",font="arial 20 bold",bg='cyan',command=search_all)
+b3=Button(root,text="Write a Review",font="arial 20 bold",bg='cyan',command=writeReview)
 label.pack()
 b1.pack(side=LEFT,padx=100)
 b2.pack(side=LEFT,padx=100)
