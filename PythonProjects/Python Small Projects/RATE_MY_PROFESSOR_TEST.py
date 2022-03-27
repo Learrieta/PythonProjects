@@ -1,12 +1,14 @@
+from msilib.schema import ListBox
+from textwrap import fill
 import tkinter.messagebox
 from tkinter import  *
 import tkinter as tk
 import random as rd
-import datetime 
 import os
 from secrets import choice
 from turtle import width
 import mysql.connector
+from PIL import ImageTk, Image
 
 db = mysql.connector.connect(
     host = "localhost",
@@ -20,32 +22,39 @@ mycursor = db.cursor()
 #Option Number one will search the professor of the user's choice
 def searchProfessor():
     root1 = Tk()
-    label=Label(root1,text="Select the search criteria: ",font='arial 25 bold')
-    fn=Button(root1,text="Search Name ",font="arial 20 bold",bg='cyan',command= search_n)
-    ln=Button(root1,text="Search Last Name",font="arial 20 bold",bg='cyan',command=search_ln)
-    all=Button(root1,text="List of Teachers",font="arial 20 bold",bg='cyan',command=search_all)
-    label.pack()
-    fn.pack(side=LEFT,padx=100)
-    ln.pack(side=LEFT,padx=100)
-    all.pack(side=LEFT,padx=100)
-    frame=Frame(root1,height=400,width=100)
+    root1.geometry("800x700")
+    root1.resizable(False, False)
+    image_2 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\PCT.png', master = root1)
+    background1 = Label(root1, image = image_2, bd = 0)
+    background1.place(x = 0, y = 0)
+    img4 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\sn.png', master = root1)
+    img5 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\snl.png', master = root1)
+    img6 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\lop.png', master = root1)
+    fn=Button(root1,image = img4,command= search_n, bd = 0)
+    ln=Button(root1,image = img5, command=search_ln, bd = 0)
+    all=Button(root1,image = img6,command=search_all, bd = 0)
+    fn.pack(side=LEFT,padx=(50,25), pady = (200,0))
+    ln.pack(side=LEFT,padx=25, pady = (200,0))
+    all.pack(side=LEFT,padx=25, pady = (200,0))
+    frame=Frame(root1)
     frame.pack()
-    root.resizable(False,False)
     root1.mainloop()
 #Function that search by name
 def search_n(): 
     global e1
     root2=Tk()
-    label=Label(root2,text="Search Name: ",font='arial 25 bold')
-    label.pack()
-    frame=Frame(root2,height=200,width=200)
+    root2.geometry("400x300")
+    root2.resizable(False, False)
+    image_3 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\sbn.png', master = root2)
+    background1 = Label(root2, image = image_3, bd = 0)
+    background1.place(x = 0, y = 0)
+    frame=Frame(root2)
     frame.pack()
-    l1=Label(root2,text="Professor Name: ")
-    l1.place(x=10,y=130)
     e1=tkinter.Entry(root2)
-    e1.place(x=100,y=130)
-    b1=Button(root2,text="SUBMIT",command=result_n)
-    b1.place(x=90,y=180)
+    e1.place(x=200,y=130, height = 35)
+    image_4 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\sup.png', master = root2)
+    b1=Button(root2,image = image_4,command=result_n, borderwidth= 0 )
+    b1.place(x=120,y=200)
     root2.mainloop()
 def result_n():
     global e1
@@ -109,21 +118,28 @@ def results_ln():
 #Function that prints all the courses and teachers available with their reviews
 def search_all():
     root5=Tk()
-    label=Label(root5,text="Teacher: ",font='arial 25 bold')
+    root5.geometry("800x700")
+    label=Label(root5,text="Teacher: ",font=("Times New Roman", 25))
     label.pack()
-    frame=Frame(root5,height=120,width=100)
+    frame=Frame(root5,height=80,width=700)
     frame.pack()
     mycursor.execute("SELECT faculty_name, faculty_lastname, course_name, course_number, credits, reviews FROM course AS c INNER JOIN faculty AS f ON c.faculty_id = f.faculty_id INNER JOIN reviews_has_faculty AS r ON f.faculty_id = r.faculty_id INNER JOIN reviews AS re ON re.reviews_id = r.reviews_id ")
     mydata = mycursor.fetchall()
-    details = Label(root5,text="The content details are as follows : ", font = 'arial 15')
+    details = Label(root5,text="The content details are as follows : ", font =("Times New Roman", 20))
     details.pack()
     details.place(x=30, y = 50)
-    details2=Label(root5,text="Name , Course, Course Code, Credit and Reviews ",font = 'arial 15')
+    details2=Label(root5,text="Name , Course, Course Code, Credit and Reviews ",font = ("Times New Roman", 20))
     details2.pack()
     details2.place(x=30, y=80 )
+    text = tk.Text(root5, width= 150,font = ("Times New Roman", 15), bd = 5, spacing1= 12 )
+    scroll_bar = Scrollbar(root5,command=text.yview)
+    scroll_bar.pack(side =RIGHT, fill = Y)
+    text['yscrollcommand'] = scroll_bar.set
+    text.pack()
     for rows in mydata:
-        answer = Label(root5,text = str(rows, ), font = 'arial 15')
-        answer.pack(pady=(0, 30))
+        text.insert(tk.END,  str(rows,) + '\n')
+        #answer = Label(root5,text = str(rows, ), font = ("Times New Roman", 15))
+        #answer.pack(side = LEFT, fill = BOTH)
 
     root5.mainloop()
 
@@ -413,15 +429,22 @@ def write_new():
         print(row)
 
 root=Tk()
-label=Label(root,text="Welcome to Rate my Professor of BYU-I",font="arial 40 bold",bg='blue')
-b1=Button(text="Search Professor",font="arial 20 bold",bg='cyan',command=searchProfessor)
-b2=Button(root,text="Search Course",font="arial 20 bold",bg='cyan',command=searchCourse)
-b3=Button(root,text="Write a Review",font="arial 20 bold",bg='cyan',command=writeReview)
-label.pack()
-b1.pack(side=LEFT,padx=100)
-b2.pack(side=LEFT,padx=100)
-b3.pack(side=LEFT,padx=100)
-frame=Frame(root,height=400,width=100)
+root.title('Rate my Professor')
+root.geometry("800x700")
+root.resizable(False, False)
+image_1 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\byui.png')
+background = Label(root, image = image_1, bd = 0)
+background.place(x = 0, y = 0)
+img1 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\sp1.png')
+img2 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\sc1.png')
+img3 = ImageTk.PhotoImage(file = r'C:\\Users\\lhida\\OneDrive - BYU-Idaho\\Pictures\\Saved Pictures\\wr1.png')
+b1=Button(root, image = img1,command=searchProfessor, borderwidth = 0)
+b2=Button(root,image = img2,command=searchCourse,borderwidth = 0)
+b3=Button(root,image = img3,command=writeReview, borderwidth = 0)
+b1.pack(side=LEFT,padx=(50,25), pady = (300,0))
+b2.pack(side=LEFT,padx=25, pady = (300,0))
+b3.pack(side=LEFT,padx=25, pady = (300,0))
+frame=Frame(root)
 frame.pack()
 root.mainloop()
     
